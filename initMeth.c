@@ -27,7 +27,7 @@
 void initMeth()
 /*:=MPE=:=======================================================*/
 {
-  int dimRange[2] = { 1,3 };
+  int dimRange[2] = { 3,3 };
   int lowMat[3]   = { 32, 32, 8 };
   int upMat[3]    = { 2048, 2048, 512 };
   int defaultMat[3] = {128, 128, 64};
@@ -50,7 +50,7 @@ void initMeth()
   }
 
   /* encoding group */
-  STB_InitEncoding( 2, dimRange, lowMat, upMat, defaultMat);
+  STB_InitEncoding( 3, dimRange, lowMat, upMat, defaultMat);
 
   /* Initialisation of rf pulse parameters */
 
@@ -72,7 +72,7 @@ void initMeth()
                   0,                // used for excitation
                   "Calculated",     // default shape
                   3000.0,           // default bandwidth
-                  30.0);            // default pulse angle
+                  7.0);            // default pulse angle
 
   // check valid range for this specific pulse see parsRelations.c
   ExcPulse1Range();
@@ -115,7 +115,7 @@ void initMeth()
   STB_InitSelIrModule();
   STB_InitBlBloodModule();
   if(!ParxRelsParHasValue("RFSpoiling"))
-    RFSpoiling=No;
+    RFSpoiling=Yes;
   if(!ParxRelsParHasValue("AngioMode"))
     AngioMode=No;
   STB_InitDummyScans(1000.0);

@@ -31,6 +31,9 @@ Description: Layout of routine parameter editor for method FLASH.
     <parameterCard displayName="Custom">
         <column>
         <parameter name="ReleaseVersion"/>
+        <parameter name="MP2_RecoveryTime"/>
+        <parameter name="MP2_EchoTrainLength"/>
+        <parameter name="EffectiveTI"/>
         </column>
     </parameterCard>  
     <parameterCard displayName="Contrast">

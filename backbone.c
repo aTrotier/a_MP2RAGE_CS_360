@@ -47,7 +47,7 @@ void backbone(void)
   UpdateRFPulses();
 
   /* general features of the method */
-  PVM_NEchoImages = 1;
+  PVM_NEchoImages = MP2_NTI;
 
   /* the inversion pulses can't handle multi-band */
   if(PVM_MbEncNBands > 1)
