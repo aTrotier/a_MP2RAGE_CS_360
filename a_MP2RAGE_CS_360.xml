@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (c) 2006 - 2017 Bruker BioSpin MRI GmbH. All Rights Reserved.
+$Id$
+Description: Layout of routine parameter editor for method FLASH.
+-->
+<cardStack
+    xmlns="http://www.bruker.de/mri/generated/xsd/card"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+    <parameterCard displayName="Routine">
+        <column>
+            <parameter name="PVM_EchoTime"/>
+            <parameter name="PVM_RepetitionTime"/>
+            <parameter name="PVM_NAverages"/>
+            <parameter name="PVM_NRepetitions"/>
+            <parameter name="PVM_ScanTimeStr"/>
+            <textLine text=""/>
+            <parameter name="ExcPulse1.Flipangle" displayName="Flip Angle"/>
+        </column>
+        <column>
+            <arrayGroup sizeParameterName="PVM_NSPacks" displayName="Slice Package" indexCouplingKey="BRUKER_SLICEPACKAGE">
+                <parameter name="PVM_SPackArrNSlices"/>
+                <parameter name="PVM_SPackArrSliceOrient"/>
+                <parameter name="PVM_SPackArrReadOrient"/>
+            </arrayGroup>
+            <parameter name="PVM_SliceThick"/>
+            <parameter name="PVM_Matrix"/>
+            <parameter name="PVM_Fov"/>
+        </column>
+    </parameterCard>
+    <parameterCard displayName="Contrast">
+        <parameterCard displayName="Main">
+            <column>
+                <parameter name="PVM_EchoTime"/>
+                <parameter name="PVM_RepetitionTime"/>
+                <parameter name="ExcPulse1.Flipangle" displayName="Flip Angle"/>
+                <parameter name="PVM_DummyScans"/>
+                <parameter name="PVM_DummyScansDur"/>
+                <parameter name="PVM_NMovieFrames"/>
+                <parameter name="PVM_MotionSupOnOff"/>
+                <parameter name="RFSpoiling"/>
+                <parameter name="AngioMode"/>
+            </column>
+            <column>
+                <parameter name="PVM_FatSupOnOff"/>
+                <parameter name="PVM_FovSatOnOff"/>
+                <parameter name="PVM_SelIrOnOff"/>
+                <parameter name="PVM_SatTransOnOff"/>
+                <parameter name="PVM_InFlowSatOnOff"/>
+                <parameter name="PVM_TaggingOnOff"/>
+                <parameter name="PVM_BlBloodOnOff"/>
+                <parameter name="PVM_EvolutionOnOff"/>
+                <parameter name="PVM_TriggerModule"/>
+            </column>
+        </parameterCard>
+        <xi:include href="file:///XML_INCLUDE_DIR/FatSup.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/FovSat.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/SelIr.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/SatTrans.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/FlowSat.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/Tagging.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/BlackBlood.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/Evolution.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/Trigg.xml"/>
+    </parameterCard>
+    <parameterCard displayName="Resolution">
+        <xi:include href="file:///XML_INCLUDE_DIR/Resolution.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/Encoding.xml"/>
+    </parameterCard>
+    <parameterCard displayName="Geometry">
+        <parameterCard displayName="Main">
+            <column>
+                <parameter name="PVM_SliceThick"/>
+                <parameter name="PVM_ObjOrderScheme"/>
+                <parameter name="PVM_MajSliceOri"/>
+		<parameter name="PVM_Fov"/>
+		<parameter name="PVM_AntiAlias"/>
+                <parameter name="PVM_MbEncAccelFactor">
+                    <parameterCard displayName="Multi-Band Details">
+                        <column>
+                        <parameter name="PVM_MbEncBlipFactor"/>
+                        <parameter name="PVM_MbSliceDist"/>
+                        </column>
+                    </parameterCard>
+                </parameter>                
+		<parameter name="PVM_AtsBedPositionMode" />
+		<parameter name="PVM_AtsChangeRefPos" />
+		<parameter name="PVM_AtsNpos">
+		  <parameterCard displayName="Position Details">
+		    <column>
+		      <parameter name="PVM_AtsShifts" />
+		      <parameter name="PVM_AtsPositions" />
+		    </column>
+		  </parameterCard>
+		</parameter>
+                <parameter name="PVM_AtsMultiPosFov"/>
+		<parameter name="PVM_AtsOverlap" />
+		<parameter name="PVM_AtsCentralSetup" />
+            </column>
+            <column>
+                <arrayGroup displayName="Slice Package" sizeParameterName="PVM_NSPacks" indexCouplingKey="BRUKER_SLICEPACKAGE">
+                    <parameter name="PVM_SPackArrNSlices"/>
+                    <parameter name="PVM_SPackArrSliceOrient"/>
+                    <parameter name="PVM_SPackArrReadOrient"/>
+                    <parameter name="PVM_SPackArrReadOffset"/>
+                    <parameter name="PVM_SPackArrPhase1Offset"/>
+                    <parameter name="PVM_SPackArrSliceOffset"/>
+                    <parameter name="PVM_SPackArrSliceGapMode"/>
+                    <parameter name="PVM_SPackArrSliceGap"/>
+                    <parameter name="PVM_SPackArrSliceDistance"/>
+                </arrayGroup>
+            </column>
+        </parameterCard>
+    </parameterCard>
+    <parameterCard displayName="Sequence">
+        <parameterCard displayName="Main">
+            <column>
+                <textLine text=""/>
+                <parameter name="PVM_EffSWh"/>
+                <parameter name="PVM_EchoPosition"/>
+                <parameter name="ExcPulse1Enum" displayName="Excitation Pulse">
+                    <parameterCard displayName="Pulse Details">
+                        <column>
+                            <parameter name="ExcPulse1"/>
+                        </column>
+                    </parameterCard>
+                </parameter>
+                <parameter name="ReadSpoiler.automatic" displayName="Auto Read Spoiler">
+                    <parameterCard displayName="Spoiler Details">
+                        <column>
+                            <parameter name="ReadSpoiler"/>
+                        </column>
+                    </parameterCard>
+                </parameter>
+                <parameter name="SliceSpoiler.automatic" displayName="Auto Slice Spoiler">
+                    <parameterCard displayName="Spoiler Details">
+                        <column>
+                            <parameter name="SliceSpoiler"/>
+                        </column>
+                    </parameterCard>
+                </parameter>
+            </column>
+            <column>
+                <parameter name="Method"/>
+                <parameter name="PVM_AcquisitionTime"/>
+                <parameter name="EncGradDur"/>
+                <textLine text=""/>
+                <textLine text=""/>
+                <textLine text=""/>
+                <textLine text=""/>
+                <parameter name="PVM_DriftCompYesNo">
+                  <xi:include href="file:///XML_INCLUDE_DIR/DriftComp.xml"/>
+                </parameter>
+            </column>
+        </parameterCard>
+        <xi:include href="file:///XML_INCLUDE_DIR/Freq1.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/Tx1.xml"/>
+  </parameterCard>
+    <parameterCard displayName="Setup">
+        <parameterCard displayName="Main">
+        <column>
+            <parameter name="PVM_RefPowMod1" />
+            <parameter name="PVM_RefPowCh1" />
+            <parameter name="PVM_RefPowStat1" />
+            <parameter name="PVM_DeriveGains" displayName="Calc. Pulse Ampl."/>
+            <parameter name="ExcPulse1Ampl.patt" displayName="Exc. Pulse Attenuation" widget="slider" />
+            <textLine text=""/>
+            <textLine text=""/>
+            <textLine text=""/>
+	    <parameter name="PVM_RgJob" />
+	    <parameter name="PVM_RgValue" widget="slider" />
+        </column>
+        <column>
+            <textLine text=""/>
+            <textLine text=""/>
+            <textLine text=""/>
+            <textLine text=""/>
+            <parameter name="ExcPulse1Ampl.ppow" displayName="Exc. Pulse Power" />
+            <parameter name="ExcPulse1Ampl.pampl" displayName="Exc. Pulse Amplitude"/>              
+        </column>
+        </parameterCard>
+        <xi:include href="file:///XML_INCLUDE_DIR/FatSupSetup.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/FovSatSetup.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/SelIrSetup.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/FlowSatSetup.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/TaggingSetup.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/BlackBloodSetup.xml"/>
+        <xi:include href="file:///XML_INCLUDE_DIR/mapshim.xml"/> 
+        <xi:include href="file:///XML_INCLUDE_DIR/StartupShim.xml"/> 
+        <xi:include href="file:///XML_INCLUDE_DIR/Shim.xml"/>
+   </parameterCard>
+    <parameterCard displayName="Result" cardType="adjresult">
+        <column>
+            <parameter name="ACQ_jobs[0].receiverGain" displayName="Receiver Gain"/>
+        </column>
+        <column>
+            <textLine text=""/>
+        </column>
+    </parameterCard>
+    <parameterCard displayName="System">
+        <xi:include href="file:///XML_INCLUDE_DIR/CoilSelection.xml"/>
+    </parameterCard>
+    <parameterCard displayName="Reconstruction" cardType="reco">
+        <column>
+            <parameter name="RecoMethMode"/>
+            <parameter name="WeightingMode"/>
+            <parameter name="MaskWeighting"/>
+            <parameter name="GaussBroadening"/>
+        </column>   
+        <column>
+            <textLine text=""/>
+        </column>
+    </parameterCard>
+    <xi:include href="file:///XML_INCLUDE_DIR/RecoParameters.xml"/>
+    <xi:include href="file:///XML_INCLUDE_DIR/CompressedSensing.xml"/>
+    <xi:include href="file:///XML_INCLUDE_DIR/ParallelImaging.xml"/> 
+</cardStack>
+

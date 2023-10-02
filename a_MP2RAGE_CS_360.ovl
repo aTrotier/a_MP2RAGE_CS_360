@@ -1,0 +1,72 @@
+/****************************************************************
+ *
+ * Copyright (c) 1999-2021
+ * Bruker BioSpin MRI GmbH
+ * D-76275 Ettlingen, Germany
+ *
+ * All Rights Reserved
+ *
+ ****************************************************************/
+
+method a_MP2RAGE_CS_360 modality MR  
+{
+
+/****************************************************************/
+/*	TYPE DEFINITIONS					*/
+/****************************************************************/
+
+
+#include "mr/recotyp.h" 
+#include "subject/subjtyp.h" 
+#include "mr/ta_config.h" 
+#include "mr/PvTypes/mrTypes.h"
+#include "Visu/Mr/VisuTypes.h"
+
+/****************************************************************/
+/*	PARAMETER DEFINITIONS					*/
+/****************************************************************/
+
+
+/*--------------------------------------------------------------*
+ * Include references of common parameters
+ *--------------------------------------------------------------*/
+#include "proto/cmn_baselevel_extern.def"
+#include "proto/cmn_subject_extern.def"
+#include "proto/cmn_config_extern.def"
+#include "proto/cmn_pvm_extern.def"
+#include "proto/cmn_visu_extern.def"
+
+/*--------------------------------------------------------------*
+ * Include references of MR specific parameters
+ *--------------------------------------------------------------*/
+#include "proto/mr_baselevel_extern.def"
+#include "proto/mr_pvm_extern.def"
+#include "proto/mr_visu_extern.def"
+
+/*--------------------------------------------------------------*
+ * Include definitions of method parameters.
+ *--------------------------------------------------------------*/
+
+#include "mr/PvTypes/method.fmt"
+#include "parsTypes.h"
+#include "parsDefinition.h"
+
+/****************************************************************/
+/*	RE-DEFINITION OF RELATIONS				*/
+/****************************************************************/
+
+#include "callbackDefs.h"
+
+/****************************************************************/
+/*	PARAMETER CLASSES					*/
+/****************************************************************/
+#include "mr/PvGroups/method.grp"
+#include "mr/PvGroups/modules.grp"
+#include "parsLayout.h"
+
+};
+
+/****************************************************************/
+/*	E N D   O F   F I L E					*/
+/****************************************************************/
+

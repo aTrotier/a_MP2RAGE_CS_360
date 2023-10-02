@@ -1,0 +1,163 @@
+;****************************************************************
+;
+; Copyright (c) 2017
+; Bruker BioSpin MRI GmbH
+; D-76275 Ettlingen, Germany
+;
+; All Rights Reserved
+;
+; FLASHAngio - a gradient echo imaging method
+;
+;****************************************************************
+
+#include <MRI.include>
+#include <PrepModulesHead.mod>
+
+define delay denab
+
+define list<phase> phaselist = {$RFPhaseList}
+define list<frequency> freqTx = {$ACQ_O1_list}
+define list<frequency> freqRx = {$ACQ_O1B_list}
+
+"denab =  d3 - de"
+
+INIT_DEVICES
+
+#define r2d PVM_EncGenValues1
+#define r3d PVM_EncGenValues2
+
+grad_zero_for_gs <r2d, r3d>
+
+            subr FlowSatInit()
+            subr SatTransInit()
+
+                 r2d.store
+                 r3d.store
+obj,    0u       r2d.restore
+        0u       r3d.restore
+start, 10u freqRx(receive):f1
+
+            subr DriftComp()
+
+   if(PVM_BlBloodOnOff)
+   {
+            subr TriggerSlice()
+   }
+            subr BlBlood(ph0)
+            subr TriggerSlice()
+            subr SliceSelIr()
+            subr Tagging()
+
+;----------------------------------handle dummy scans --------------
+if( l3 >= 1)   ;dummy scans
+{
+dummy, 30u
+       10u
+
+;----------------------- preparation modules -----------------------
+            subr TriggerPhase()
+            subr FlowSat()
+            subr FovSat()
+            subr SatTrans()
+            subr FatSup()
+
+        d6       grad_ramp{0, 0, g9}
+
+;------------------------ slice selection --------------------------
+        d3       grad_ramp{0, 0, g0}  freqTx:f1
+       (p0:sp0   phaselist):f1
+        d4        grad_off
+
+;----------- slice rephase, read dephase, phase encoding -----------
+       d10       grad_ramp{g2, r2d*g3, g1+r3d*g4}
+        d2       grad_off
+
+;----------------------- frequency encoding ------------------------
+        d3       grad_ramp{g5, 0, 0}
+  AQ_(job0)
+
+;------------------ read spoiler + phase encoding ------------------
+       d11       grad_ramp{g6, r2d*g7, r3d*g8}    ; 2nd and 3rd dims
+       d12       grad_ramp{g6, 0, 0}
+        d3       grad_off
+        d0
+        0u       phaselist.inc           ;phase list for RF spoiling
+
+     lo to dummy times l3
+}
+
+acquisition,     UPDATE_DYN_PARS_30u
+        10u  
+
+;----------------------- preparation modules -----------------------
+            subr TriggerPhase()
+            subr FlowSat()
+            subr FovSat()
+            subr SatTrans()
+            subr FatSup()
+
+        d6       grad_ramp{0, 0, g9}
+
+;------------------------ slice selection --------------------------
+        d3       grad_ramp{0, 0, g0}  freqTx:f1
+       (p0:sp0   phaselist):f1
+        d4       grad_off
+
+;----------- slice rephase, read dephase, phase encoding -----------
+        d10       grad_ramp{g2, r2d*g3, g1+r3d*g4}
+        d2        grad_off
+
+;----------------------- frequency encoding ------------------------
+     denab       grad_ramp{g5, 0, 0}
+
+                 ADC_INIT_(job0, ph1, phaselist)
+
+  AQ_(job0)      ADC_START_(job0)
+
+;------------------ read spoiler + phase encoding ------------------
+       d11       grad_ramp{g6, r2d*g7, r3d*g8}    ; 2nd and 3rd dims
+       d12       grad_ramp{g6, 0, 0}
+        d3       grad_off
+        d0       ADC_END_(job0)
+        0u       phaselist.inc           ;phase list for RF spoiling
+
+;---------------------------------- common-loop (2D/3D) --------------------------
+        0u       r2d.inc
+        0u       r3d.inc
+     lo to acquisition times l1
+
+;--------------------------- slice loop ----------------------------
+            subr FlowSatInc()
+        0u       grad_matrix.inc
+        0u       freqTx.inc
+        0u       freqRx.inc
+
+     lo to obj times NI
+;------------------------- averaging loop --------------------------
+     lo to obj times NA
+
+;----------------------------- outer-loop -----------------------------
+     lo to start times l2
+
+        0u       r2d.store
+        0u       r3d.store
+;---------------------- motion averaging loop ----------------------
+ 
+     lo to start times NAE
+
+;-------------------------- sattrans loop --------------------------
+   
+            subr SatTransInc()
+
+;------------------------- repetition loop -------------------------
+    
+            subr Evolution()
+  
+     lo to start times NR
+
+SETUP_GOTO(start)
+
+exit
+
+ph0 = 0
+ph1 = 0
