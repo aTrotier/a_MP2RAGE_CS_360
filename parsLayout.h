@@ -20,6 +20,7 @@
 
 pargroup
 {
+  CustomParameters;
   PVM_EffSWh;
   PVM_EchoPosition;
   EncGradDur;

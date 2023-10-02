@@ -11,6 +11,7 @@
 #define DEBUG	 0
 
 #include "method.h"
+#include "customRelations.c"
 
 /*:=MPB=:=======================================================*
  *
@@ -141,6 +142,9 @@ void initMeth()
   ParxRelsParMakeNonEditable({"PVM_MinEchoTime","PVM_AcquisitionTime"});
   ParxRelsParMakeNonEditable({"EncGradDur"});
   ParxRelsParShowInEditor({"PVM_EncPpiRefScan"});
+
+  //custom function
+  InitCustom();
   /*
    * Once all parameters have initial values, the backbone is called
    * to assure they are consistent

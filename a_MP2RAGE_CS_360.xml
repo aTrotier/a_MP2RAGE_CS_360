@@ -28,6 +28,11 @@ Description: Layout of routine parameter editor for method FLASH.
             <parameter name="PVM_Fov"/>
         </column>
     </parameterCard>
+    <parameterCard displayName="Custom">
+        <column>
+        <parameter name="ReleaseVersion"/>
+        </column>
+    </parameterCard>  
     <parameterCard displayName="Contrast">
         <parameterCard displayName="Main">
             <column>
