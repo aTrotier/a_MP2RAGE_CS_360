@@ -11,7 +11,6 @@
 #define DEBUG	 0
 
 #include "method.h"
-#include "customRelations.c"
 
 /*:=MPB=:=======================================================*
  *

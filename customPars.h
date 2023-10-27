@@ -1,9 +1,8 @@
 char parameter ReleaseVersion[9];
 
 /****** MP2RAGE ********/
-double parameter MP2_IRDelay1; // delay between inversion and GRE block 1
-double parameter MP2_IRDelay2; // delay between GRE block1 and GRE block 2
-double parameter MP2_RecoveryDelay; // delay between GRE block2 and MP2RAGE_TR
+double parameter MP2_VarIRDelay[3]; // 3 delay between IR/ETL1/ETL2/MP2RAGE_Recovery
+
 int parameter MP2_NTI; // Number of INVERSION TIME POINTS
 
 double parameter

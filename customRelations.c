@@ -7,14 +7,10 @@
  * All Rights Reserved
  *
  * ***************************************************************/
-void InitCustom();
-void ExcPulse2EnumRelation();
-void ExcPulse2AmplRel();
-void ExcPulse2Relation();
-void ExcPulse2Range();
-void HandleRFPulse2Amplitude();
 
-#define DEBUG	 0
+
+
+#define DEBUG	 1
 
 #include "method.h"
 
@@ -24,12 +20,14 @@ void HandleRFPulse2Amplitude();
  *===============================================================*/
 void InitCustom()
 {
-  strncpy(ReleaseVersion, "v0.0.1", 9);
+  strncpy(ReleaseVersion, "v0.0.2", 9);
   ParxRelsParMakeNonEditable({"ReleaseVersion"});
   //ParxRelsShowInEditor("ReleaseVersion"); //ParxRelsHideInEditor
 
   MP2_NTI = 2;
   ParxRelsParMakeNonEditable({"MP2_NTI"}); 
+
+  ParxRelsParChangeDims("EffectiveTI",{MP2_NTI});
 
   if(ParxRelsParHasValue("MP2_EchoTrainLength") == No)
   {
@@ -48,7 +46,60 @@ void InitCustom()
   // check valid range for this specific pulse see parsRelations.c
   ExcPulse2Range();
 }
+/*===============================================================
+ * MP2 Delay functions
+ * 
+ *===============================================================*/
+void MP2_Delay()
+{
 
+  double IrInitDelay; // time of the IR module between half of Inv Pulse and end of module
+    //see : /opt/PV6.0.1/exp/stan/nmr/lists/pp/SliceSelIr.mod
+      IrInitDelay =
+              (
+                PVM_SelIrP0/1000.0/1000.0/2 + // IrPulse /2 
+                PVM_SelIrD4                 + //grad_ramp
+                PVM_SelIrD2                 + //IR spoiler : not used (except for repetitions)
+                PVM_SelIrD4                 + //grad_ramp
+                PVM_SelIrD1                   
+              )*1000; //en ms
+      
+        DB_MSG(("-->IrInitDelay = %f ",IrInitDelay));
+
+double delayBeforePulse;
+delayBeforePulse = (
+                    0.03 + //ms
+                    0.01 +
+                    SliceSpoiler.dur +
+                    CFG_GradientRiseTime() +
+                    ExcPulse1.Length - EffPulseDur
+                   );
+
+        DB_MSG(("-->delayBeforePulse = %f ",delayBeforePulse));
+
+  double minTI[MP2_NTI];
+  minTI[0] =  IrInitDelay + 
+              delayBeforePulse +
+              PVM_RepetitionTime * (int)((MP2_EchoTrainLength-1)/2);
+  
+        DB_MSG(("-->minTI[0] = %f ",minTI[0]));
+        
+  EffectiveTI[0]=MAX_OF(minTI[0],EffectiveTI[0]);
+  MP2_VarIRDelay[0] = (EffectiveTI[0]-minTI[0])/1000.0;
+
+  minTI[1]=EffectiveTI[0] + PVM_RepetitionTime*(int)(MP2_EchoTrainLength);
+  EffectiveTI[1]=MAX_OF(minTI[1],EffectiveTI[1]);
+  MP2_VarIRDelay[1] = (EffectiveTI[1]-minTI[1])/1000.0;
+
+  double minRecovTime = EffectiveTI[1] +
+                        PVM_RepetitionTime*(int)((MP2_EchoTrainLength)/2+1) +
+                        + 0.02 //delay module inversion
+                        + (PVM_SelIrD4)*1000.0
+                        + PVM_SelIrP0/1000.0/2 ;
+
+  MP2_RecoveryTime = MAX_OF(MP2_RecoveryTime,minRecovTime);
+  MP2_VarIRDelay[2] = (MP2_RecoveryTime - minRecovTime) / 1000.0;
+}
 /*===============================================================
  * RF functions
  * copy from parsRelations.c

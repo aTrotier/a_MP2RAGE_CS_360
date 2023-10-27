@@ -26,9 +26,10 @@ void backbone(void)
   //constrain geometry
   STB_ConstrainSliceGeoForMb(PVM_MbEncNBands);
   
+  PVM_RareFactor = MP2_EchoTrainLength;
   /* update encoding parameter group                          */
   STB_UpdateEncoding(
-    NULL,
+    &PVM_RareFactor,
     SEG_SEQUENTIAL,
     Yes,
     Yes,
@@ -354,6 +355,7 @@ void UpdateSequenceTiming()
   /* Find min TR and update TR */
   UpdateRepetitionTime();
 
+  MP2_Delay();
   /* Calculate total experiment time */
   UpdateTotalTime();
 }
@@ -372,7 +374,7 @@ void UpdateRepetitionTime(void)
     if(PVM_SelIrOnOff == On)
     {
       PVM_MinRepetitionTime = PVM_DriftCompModuleTime
-                              + PVM_SelIrModuleTime
+                              //+ PVM_SelIrModuleTime
                               + PVM_TaggingModuleTime
                               + nSlices * SliceSegDur ;
     }

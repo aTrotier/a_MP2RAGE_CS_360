@@ -10,7 +10,7 @@
 #
 # -------------------------------------------------------------
 
-EXECDISKUNIT = /opt/PV-360.3.4
+EXECDISKUNIT = /opt/PV-360.3.5
 
 OVERLAY = a_MP2RAGE_CS_360
 
@@ -22,7 +22,8 @@ OBJS = \
 	RecoRelations.o \
 	backbone.o \
 	adjust.o \
-	deriveVisu.o 
+	deriveVisu.o \
+        customRelations.o
 
 PPGS = \
 	a_MP2RAGE_CS_360.ppg \

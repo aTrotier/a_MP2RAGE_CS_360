@@ -13,6 +13,9 @@
 #include <MRI.include>
 #include <PrepModulesHead.mod>
 
+define list<delay> MpDelay={$MP2_VarIRDelay}
+0u MpDelay.res
+
 define list<phase> phaselist = {$RFPhaseList}
 define list<frequency> freqTx = {$ACQ_O1_list}
 define list<frequency> freqRx = {$ACQ_O1B_list}
@@ -37,28 +40,32 @@ grad_zero_for_gs <r2d, r3d>
 avg,    0u        r2d.restore
         0u        r3d.restore
 start,  0u
-             subr DriftComp()
+    ;         subr DriftComp()
 
-   if (PVM_BlBloodOnOff == On)
-   {
-             subr TriggerPhase()
-   }
-             subr BlBlood(ph0)
-             subr TriggerPhase()
+   ;if (PVM_BlBloodOnOff == On)
+   ;{
+   ;          subr TriggerPhase()
+   ;}
+             ;subr BlBlood(ph0)
+             ;subr TriggerPhase()
              subr SliceSelIr()
-             subr Tagging()
+             ;subr Tagging()
 
         0u        r2d.store
         0u        r3d.store
 ;-------------------- start of the main loop -----------------------
-slice,            UPDATE_DYN_PARS_30u 
-       10u        freqRx(receive):f1
+TI,            
+        MpDelay
+            0u        r2d.restore
+            0u        r3d.restore
+ETL,     UPDATE_DYN_PARS_30u 
+        10u        freqRx(receive):f1
 
-             subr TriggerSlice()
-             subr FlowSat()
-             subr FovSat()
-             subr SatTrans()
-             subr FatSup()
+             ;subr TriggerSlice()
+             ;subr FlowSat()
+             ;subr FovSat()
+             ;subr SatTrans()
+             ;subr FatSup()
 
         d6        grad_ramp{0, 0, g9}
 
@@ -85,33 +92,40 @@ slice,            UPDATE_DYN_PARS_30u
         d0        ADC_END_(job0)
 
 ;---------------------- slice and echo loop -----------------------
-             subr FlowSatInc()
+             ;subr FlowSatInc()
         0u        grad_matrix.inc
         0u        freqTx.inc
         0u        freqRx.inc
-
-      lo to slice times NSLICES/PVM_MbEncNBands * PVM_NEchoImages
-
-;----------------------------- movie loop -----------------------------
-if "l3 <= 0"{
+      
+        if "l3 <= 0"{
         0u        r2d.inc
         0u        r3d.inc
-}
-        lo to slice times l10             ;PVM_NMovieFrames
-
+        }
+       
        d20
         0u        phaselist.inc           ;phase list for RF spoiling
+      
+      lo to ETL times MP2_EchoTrainLength
+        0u MpDelay.inc
+;--------------------------- Inversion Time Point loop ----------------------------
+      lo to TI times PVM_NEchoImages
+        MpDelay
+        0u        r2d.store
+        0u        r3d.store
+        0u        MpDelay.res
+;----------------------------- movie loop -----------------------------
+
+        ;lo to slice times l10             ;PVM_NMovieFrames
 
 ;--------------------------- dummy loop ----------------------------
                 "l3=l3-1"
    if "l3>=0" goto start
 
 ;------------------------- averaging loop --------------------------
-     lo to avg times NA
+     ;lo to avg times NA
 
 ;----------------------------- common-loop (2D/3D) -----------------------------
-
-     lo to start times l1
+     lo to start times PVM_EncGenTotalSteps/MP2_EchoTrainLength
 
 ;---------------------- motion averaging loop ----------------------
  
@@ -119,7 +133,7 @@ if "l3 <= 0"{
 
 ;-------------------------- sattrans loop --------------------------
 
-             subr SatTransInc()
+             ;subr SatTransInc()
 
 ;------------------------- repetition loop -------------------------
  
