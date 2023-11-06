@@ -17,28 +17,19 @@ void SetRecoParam( void )
 {
   DB_MSG(("-->SetRecoParam\n"));
 
-  /* set baselevel reconstruction parameter */
+  
+  /* set baselevel reconstruction parameters */
+  
 
   int dim = PTB_GetSpatDim();
-  int echoImages = PVM_NEchoImages * PVM_NMovieFrames;
-  int phaseFactor = AngioMode==Yes ? PVM_EncGenTotalSteps/PVM_NMovieFrames/PVM_EncGenLoopOuter: 1;
-  int nSlices = GTB_NumberOfSlices( PVM_NSPacks, PVM_SPackArrNSlices )/PVM_MbEncNBands;
-  int mbFactor = MIN_OF(PVM_MbEncNBands,PVM_MbEncAccelFactor);  
-  int recoSlices = nSlices;
-  /* except for MB RG adjustment or Setup_Experiment where no slice-grappa reco is performed*/
-  if(PVM_MbEncNBands <= mbFactor && (ACQ_scan_type != Setup_Experiment))
-    recoSlices *= PVM_MbEncNBands;
-  int recoObjects = echoImages * recoSlices;
+  int echoImages = PVM_NEchoImages;
+  int niout;
 
-  RecoDescriptionInSliceCount = PVM_NMovieFrames;
-  RecoDescriptionSliceCount = recoSlices;
-  RecoDescriptionOutSliceCount = 1;
+  /*specific Fws parameters*/
+  ATB_SetFwsRecoParam(dim, PVM_Matrix, PVM_Fov, PVM_FrqWork[0], PVM_EffSWh);
+    niout = NI;
 
-  RecoEncodingOuterRepetitions = 0;
-  RecoEncodingFrames = PVM_NMovieFrames;
 
-  RecoGrappaCoefReps = PVM_EncPpiRefScan?PVM_NMovieFrames:1;
-  
   ATB_InitUserModeReco(
     dim,
     0,
@@ -46,71 +37,61 @@ void SetRecoParam( void )
     PVM_Matrix,
     PVM_AntiAlias,
     PVM_EncPftOverscans,
-    recoObjects,
+    niout,                 //N_outImages
     ACQ_obj_order,
-    phaseFactor,
+    PVM_RareFactor,
     PVM_EncGenSteps1,
     PVM_EncGenSteps2,
     NULL,
     PVM_EncNReceivers,
     PVM_EncChanScaling,
-    dim>1? PVM_EncPpiRefLines:0,
-    dim>1? PVM_EncPpi:0,
-    NI);
-  
+    PVM_EncPpiRefLines,
+    PVM_EncPpi,
+    NI);                   //N_sortImages
+
+  /*set dimension of RECO_rotate to handle cases where niout!=NI (e.g. FwsCombine)*/
+  RecoObjectsPerRepetition=NI;
+  ParxRelsParRelations("RECO_rotate",No);
+
   ATB_SetRecoRotate(
     NULL,
     PVM_Fov[0] * PVM_AntiAlias[0],
-    recoSlices,
+    NSLICES,
     echoImages,
     0);
 
-  if(dim>1)
-  {
-    ATB_SetRecoRotate(
-      PVM_EffPhase1Offset,
-      PVM_Fov[1] * PVM_AntiAlias[1],
-      recoSlices,
-      echoImages,
-      1);
-  }
+  ATB_SetRecoRotate(
+    PVM_EffPhase1Offset,
+    PVM_Fov[1] * PVM_AntiAlias[1],
+    NSLICES,
+    echoImages,
+    1);
 
   if (dim == 3)
   {
     ATB_SetRecoRotate(
       PVM_EffPhase2Offset,
       PVM_Fov[2] * PVM_AntiAlias[2],
-      recoSlices,
+      NSLICES,
       echoImages,
       2);
   }
 
+  /*reset to orig value after setting of RECO_rotate*/
+  RecoObjectsPerRepetition=niout;
 
-  if(RecoMethMode != SWI)
+
+  for (int i = 0; i < dim; i++)
   {
-    for (int i = 0; i < dim; i++)
-    {
-      ATB_SetRecoPhaseCorr(50.0, 0.0, i);
-    }
+    ATB_SetRecoPhaseCorr(50.0, 0.0, i);
   }
 
   ATB_SetRecoTranspositionFromLoops(
     "PVM_SliceGeo",
     dim,
     echoImages,
-    recoObjects);
+    niout);
 
-
-  /* special settings */
-
-  RecoMethModeVisPar();
-
-  if (RecoMethMode == SWI && WeightingMode == phase_image)
-  {
-    RecoCombineMode = AddImages;
-    RECO_image_type = PHASE_IMAGE;
-    ParxRelsParRelations("RECO_image_type", Yes);
-  }
 
   DB_MSG(("<--SetRecoParam\n"));
 }

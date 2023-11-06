@@ -74,6 +74,16 @@ void SetBasicParameters( void )
     ATB_SetNA( 1 );
   }
 
+   /* ACQ_ns */
+
+  ACQ_ns_list_size = PVM_NEchoImages;
+  ParxRelsParRelations("ACQ_ns_list_size",Yes);
+
+  for(int echo=0; echo<PVM_NEchoImages; echo++)
+    ACQ_ns_list[echo] = 1;
+
+  NS = ACQ_ns_list[0];
+  
   /* NECHOES */
   NECHOES = PVM_NEchoImages;
 
@@ -233,8 +243,9 @@ void SetInfoParameters( void )
 
   ACQ_flip_angle = ExcPulse1.Flipangle;
 
-  ParxRelsParChangeDims("ACQ_echo_time",{1});
-  ACQ_echo_time[0] = PVM_EchoTime;
+ ParxRelsParChangeDims( "ACQ_echo_time", {PVM_NEchoImages} );
+  for(i=0; i<PVM_NEchoImages; i++)
+    ACQ_echo_time[i] = PVM_EchoTime;
 
   ParxRelsParChangeDims("ACQ_inter_echo_time",{1});
   ACQ_inter_echo_time[0] = PVM_EchoTime;
@@ -432,10 +443,21 @@ void SetAcquisitionParameters(void)
 
   if (AngioMode == No)
   {
+    
+      job0->appendLoop(PVM_RareFactor);
+    job0->appendLoop(PVM_NEchoImages);
+    job0->appendLoop(NSLICES);
+    job0->appendLoop(PVM_DummyScans, LOOP_DUMMIES);
+    job0->appendLoop(NA, LOOP_AVERAGE, LOOP_SETUP);
+    job0->appendLoop(PVM_EncGenTotalSteps/PVM_RareFactor);
+    job0->appendLoop(NAE, LOOP_AVERAGE);
+    job0->appendLoop(NR);
+    /*
     job0->appendLoop(NI);
     job0->appendLoop(PVM_DummyScans, LOOP_DUMMIES);
     job0->appendLoop(NA, LOOP_AVERAGE, LOOP_SETUP);
     job0->appendLoop(PVM_EncGenTotalSteps/PVM_NMovieFrames);
+    */
   }
   else
   {
