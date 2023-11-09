@@ -357,7 +357,7 @@ void UpdateSequenceTiming()
 
   MP2_Delay();
   /* Calculate total experiment time */
-  UpdateTotalTime();
+  MP2_UpdateTotalTime();
 }
 
 

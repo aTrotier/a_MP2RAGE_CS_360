@@ -84,10 +84,8 @@ void initMeth()
 
   /* 1: method specific initialisation */
 
-  if(ParxRelsParHasValue("PVM_RepetitionTime") == No)
-    PVM_RepetitionTime = 100.0;
   if(ParxRelsParHasValue("PVM_EchoTime") == No)
-    PVM_EchoTime = 4.0;
+    PVM_EchoTime = 3.0;
   if(ParxRelsParHasValue("PVM_DeriveGains") == No)
     PVM_DeriveGains = Yes;
   if(!ParxRelsParHasValue("GopAdj"))

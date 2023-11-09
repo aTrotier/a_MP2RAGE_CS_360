@@ -3,14 +3,12 @@
 
 ## TO DO
 
-- [ ] Calcul du TR sans inversion
+- [ ] Ajouter controle du 2eme pulse
 - [ ] Reorder line to read kspace center at TI
-- [ ] Calcul du temps total
+
 - [ ] CS mask with vd poisson
 - [ ] Reconstruction avec Julia
-- [ ] Ajouter controle du 2eme pulse
 
-- [ ] Forcer l'utilisation de l'inversion
 
 ## TO TEST
 - [ ] sur cerveaux
@@ -20,3 +18,6 @@
 - [x] Inline reconstruction with bruker (managing 2 TI)
 - [x] Gestion Dummy
 - [x] utilisation mask bruker
+- [x] Calcul du TR sans inversion
+- [x] Calcul du temps total
+- [x] Forcer l'utilisation de l'inversion

@@ -29,10 +29,6 @@ void InitCustom()
 
   ParxRelsParChangeDims("EffectiveTI",{MP2_NTI});
 
-  if(ParxRelsParHasValue("MP2_EchoTrainLength") == No)
-  {
-    MP2_EchoTrainLength = PVM_Matrix[1];
-  }
 
   STB_InitRFPulse("ExcPulse2",      // name of pulse structure
                 "ExcPulse2Enum",  // name of pulse list parameter
@@ -45,6 +41,34 @@ void InitCustom()
 
   // check valid range for this specific pulse see parsRelations.c
   ExcPulse2Range();
+
+  // Specific parameters for IR
+  PVM_SelIrOnOff = On;
+  PVM_SelIrInvTime=0;
+  ParxRelsParMakeNonEditable({"PVM_SelIrInvTime","PVM_SelIrOnOff"});
+
+  // disable some flash specificities
+  ParxRelsParMakeNonEditable({"AngioMode"});
+  ParxRelsParShowInEditor({"AngioMode"});
+
+  // Setup parameters
+ if(ParxRelsParHasValue("PVM_RepetitionTime") == No)
+ {
+    PVM_RepetitionTime = 7;
+ }
+
+ if(ParxRelsParHasValue("MP2_EchoTrainLength") == No)
+  {
+    MP2_EchoTrainLength = 128;
+  }
+
+if(ParxRelsParHasValue("EffectiveTI") == No)
+  {
+    EffectiveTI[0] = 800;
+    EffectiveTI[1] = 2250;
+    MP2_RecoveryTime = 5000;
+  }
+  
 }
 /*===============================================================
  * MP2 Delay functions
@@ -99,6 +123,28 @@ delayBeforePulse = (
 
   MP2_RecoveryTime = MAX_OF(MP2_RecoveryTime,minRecovTime);
   MP2_VarIRDelay[2] = (MP2_RecoveryTime - minRecovTime) / 1000.0;
+}
+
+
+
+void MP2_UpdateTotalTime(void)
+{
+  DB_MSG(("-->UpdateTotalTime"));
+
+  double TotalTime = 0;
+
+  TotalTime = MP2_RecoveryTime*PVM_EncGenTotalSteps/MP2_EchoTrainLength;
+  /* time for one repetition */
+  OneRepTime = TotalTime/1000.0;
+
+  TotalTime = TotalTime * PVM_NRepetitions;
+
+  PVM_ScanTime = TotalTime;
+  UT_ScanTimeStr(PVM_ScanTimeStr,TotalTime);
+  ParxRelsParShowInEditor({"PVM_ScanTimeStr"});
+  ParxRelsParMakeNonEditable({"PVM_ScanTimeStr"});
+
+  DB_MSG(("<--UpdateTotalTime"));
 }
 /*===============================================================
  * RF functions

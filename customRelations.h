@@ -8,5 +8,5 @@ void ExcPulse2AmplRel();
 void ExcPulse2Relation();
 void ExcPulse2Range();
 void HandleRFPulse2Amplitude();
-
+void MP2_UpdateTotalTime();
 #endif
